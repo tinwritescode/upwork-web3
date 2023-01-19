@@ -7,6 +7,7 @@ import {
   IconButton,
   Input,
   InputGroup,
+  InputGroupProps,
   InputLeftElement,
   InputRightElement,
   Link,
@@ -86,7 +87,7 @@ export function AppHeader({}) {
           <Heading size="md">Freelancer</Heading>
         </NextLink>
 
-        <Flex gap={4}>
+        <Flex gap={4} display={{ base: "none", md: "flex" }}>
           {links.map((link) => {
             const isCurrentUrl = link.items.some((item) => {
               return RegExp(`^${item.href}`).test(window.location.pathname);
@@ -146,7 +147,7 @@ export function AppHeader({}) {
 
         <Spacer />
 
-        <SearchInput />
+        <SearchInput display={{ base: "none", md: "block" }} />
 
         {/* ? */}
         <IconButton aria-label="Help" variant="ghost">
@@ -166,7 +167,7 @@ export function AppHeader({}) {
   );
 }
 
-function SearchInput() {
+function SearchInput({ ...rest }: InputGroupProps) {
   const findLinks = [
     {
       label: "Jobs",
@@ -185,7 +186,7 @@ function SearchInput() {
     },
   ];
   return (
-    <InputGroup maxW="sm">
+    <InputGroup maxW="sm" {...rest}>
       <InputLeftElement pointerEvents="none">
         <IoSearch />
       </InputLeftElement>
