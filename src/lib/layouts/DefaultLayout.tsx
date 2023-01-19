@@ -18,7 +18,7 @@ const DefaultLayout = ({ children }: { children: React.ReactElement }) => {
       <AppHeader />
 
       <Box maxW="full" overflow="auto" flexGrow={1}>
-        <Box as="main" minHeight="calc(100vh)" pb={isSmallerThan750 ? 20 : 0}>
+        <Box as="main" pb={isSmallerThan750 ? 20 : 0}>
           {children}
         </Box>
 
