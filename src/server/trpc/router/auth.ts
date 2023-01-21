@@ -1,10 +1,18 @@
-import {
-  recoverTypedSignature,
-  SignTypedDataVersion,
-} from "@metamask/eth-sig-util";
 import { z } from "zod";
-
+import { keyStores } from "near-api-js";
 import { publicProcedure, router } from "../trpc";
+import path from "path";
+import { homedir } from "os";
+
+const CREDENTIALS_DIR = ".near-credentials";
+
+const credentialsPath = path.join(homedir(), CREDENTIALS_DIR);
+const keyStore = new keyStores.UnencryptedFileSystemKeyStore(credentialsPath);
+const config = {
+  keyStore,
+  networkId: "testnet",
+  nodeUrl: "https://rpc.testnet.near.org",
+};
 
 export const authRouter = router({
   getNonce: publicProcedure.query(async ({ ctx }) => {
@@ -16,7 +24,7 @@ export const authRouter = router({
       };
     }
 
-    // Return 9 number nonce
+    // Return random nonce that can't be brute forced
     const loginNonce = (ctx.session.loginNonce = Math.floor(
       100000000 + Math.random() * 900000000
     ));

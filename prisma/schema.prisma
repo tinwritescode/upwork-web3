@@ -13,4 +13,73 @@ datasource db {
 model User {
   id      BigInt @id @default(autoincrement())
   address String @unique
+
+  clientId     BigInt?  @unique
+  Client       Client[]
+  WorkAssigned Work[]
+}
+
+model Client {
+  id BigInt @id @default(autoincrement())
+
+  User   User   @relation(fields: [userId], references: [id])
+  userId BigInt
+  Work   Work[]
+}
+
+enum PayType {
+  HOURLY
+  FIXED
+}
+
+enum LevelRequired {
+  JUNIOR
+  MID
+  EXPERT
+}
+
+enum ProjectType {
+  NEW
+  ON_GOING
+  MAINTAINANCE
+}
+
+model Work {
+  id BigInt @id @default(autoincrement())
+
+  assignedTo BigInt
+  User       User   @relation(fields: [assignedTo], references: [id])
+
+  Client   Client @relation(fields: [clientId], references: [id])
+  clientId BigInt
+
+  // Fields
+  title              String
+  content            String
+  payType            PayType
+  levelRequired      LevelRequired
+  projectType        ProjectType
+  skillsAndExperties SkillsAndExperties[]
+}
+
+model SkillsAndExperties {
+  id BigInt @id @default(autoincrement())
+
+  Work   Work   @relation(fields: [workId], references: [id])
+  workId BigInt
+
+  subItems SkillSubItem[]
+
+  skill String
+  exp   Int
+}
+
+model SkillSubItem {
+  id BigInt @id @default(autoincrement())
+
+  // name
+  name String
+
+  SkillsAndExperties   SkillsAndExperties? @relation(fields: [skillsAndExpertiesId], references: [id])
+  skillsAndExpertiesId BigInt?
 }

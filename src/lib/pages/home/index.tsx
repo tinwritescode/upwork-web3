@@ -149,7 +149,7 @@ function HomeRight({}) {
             <AppLink href="/my-proposals">My Proposal</AppLink>
           </CardHeader>
           <Divider />
-          <CardBody>
+          <CardBody fontSize="sm">
             <Text>
               Looking for work? Browse jobs and get started on a proposal.
             </Text>

@@ -4,7 +4,7 @@ import NextLink from "next/link";
 
 function AppLink({ children, ...props }: LinkProps) {
   return (
-    <NextLink href={props.href || "#"} passHref>
+    <NextLink href={props.href || "#"} passHref legacyBehavior>
       <Link>{children}</Link>
     </NextLink>
   );

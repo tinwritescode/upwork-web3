@@ -1,3 +1,4 @@
+import type { InputGroupProps } from "@chakra-ui/react";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputGroupProps,
   InputLeftElement,
   InputRightElement,
   Link,
@@ -20,13 +20,14 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 import { BiMessage } from "react-icons/bi";
 import { FaPeopleCarry, FaTasks } from "react-icons/fa";
 import { IoHelp, IoSearch } from "react-icons/io5";
 import { RxBell, RxChevronDown } from "react-icons/rx";
-import NextLink from "next/link";
+import ConnectWalletButton from "./ConnectWalletButton";
 
-export function AppHeader({}) {
+export default function AppHeader({}) {
   const links = [
     {
       label: "Find work",
@@ -162,6 +163,8 @@ export function AppHeader({}) {
         <IconButton aria-label="Notification" variant="ghost">
           <RxBell size={20} />
         </IconButton>
+
+        <ConnectWalletButton />
       </HStack>
     </Box>
   );

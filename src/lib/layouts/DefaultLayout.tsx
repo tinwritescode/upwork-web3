@@ -1,7 +1,7 @@
-import { Box, Flex, Spinner, useMediaQuery } from "@chakra-ui/react";
+import { Box, Center, Flex, Spinner, useMediaQuery } from "@chakra-ui/react";
 import Head from "next/head";
 import { memo } from "react";
-import { AppHeader } from "../components/AppHeader";
+import { AppHeader } from "../components";
 import { useHydrated } from "../core/hooks/useHydrated";
 
 const DefaultLayout = ({ children }: { children: React.ReactElement }) => {
@@ -40,9 +40,9 @@ const DefaultLayout = ({ children }: { children: React.ReactElement }) => {
       /> */}
     </Flex>
   ) : (
-    <>
+    <Center>
       <Spinner />
-    </>
+    </Center>
   );
 };
 
