@@ -19,6 +19,7 @@ import type {
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const THIRTY_TGAS = "30000000000000";
 const NO_DEPOSIT = "0";
@@ -61,23 +62,31 @@ export class Wallet {
       modules: [
         setupMyNearWallet({ iconUrl: MyNearIconUrl.src }),
         setupLedger({ iconUrl: LedgerIconUrl.src }),
+        setupWalletConnect({
+          metadata: {
+            name: "App Name",
+            description: "My App Description",
+            url: "https://myapp.com",
+            icons: ["https://myapp.com/favicon.ico"],
+          },
+          projectId: "fbc8adabe1de4762d151952179db25dd",
+        }),
       ],
     });
 
     const isSignedIn = this.walletSelector.isSignedIn();
 
-    if (!isSignedIn) {
-      throw new Error("Not signed in");
+    // If user is signed in, update fields, otherwise do nothing
+    if (isSignedIn) {
+      const accountState = this.walletSelector.store.getState().accounts[0];
+
+      if (!accountState) {
+        return;
+      }
+
+      this.wallet = await this.walletSelector.wallet();
+      this.accountId = accountState.accountId;
     }
-
-    const accountState = this.walletSelector.store.getState().accounts[0];
-
-    if (!accountState) {
-      throw new Error("No account ID found");
-    }
-
-    this.wallet = await this.walletSelector.wallet();
-    this.accountId = accountState.accountId;
 
     return isSignedIn;
   }
