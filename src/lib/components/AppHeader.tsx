@@ -87,7 +87,6 @@ export default function AppHeader({}) {
         <NextLink href="/">
           <Heading size="md">Freelancer</Heading>
         </NextLink>
-
         <Flex gap={4} display={{ base: "none", md: "flex" }}>
           {links.map((link) => {
             const isCurrentUrl = link.items.some((item) => {
@@ -145,25 +144,24 @@ export default function AppHeader({}) {
             );
           })}
         </Flex>
-
         <Spacer />
-
         <SearchInput display={{ base: "none", md: "block" }} />
 
-        {/* ? */}
-        <IconButton aria-label="Help" variant="ghost">
-          <IoHelp size={24} />
-        </IconButton>
+        <Box display={{ base: "none", md: "block" }}>
+          {/* ? */}
+          <IconButton aria-label="Help" variant="ghost">
+            <IoHelp size={24} />
+          </IconButton>
 
-        <IconButton aria-label="Message" variant="ghost">
-          <BiMessage size={20} />
-        </IconButton>
+          <IconButton aria-label="Message" variant="ghost">
+            <BiMessage size={20} />
+          </IconButton>
 
-        {/* Notification */}
-        <IconButton aria-label="Notification" variant="ghost">
-          <RxBell size={20} />
-        </IconButton>
-
+          {/* Notification */}
+          <IconButton aria-label="Notification" variant="ghost">
+            <RxBell size={20} />
+          </IconButton>
+        </Box>
         <ConnectWalletButton />
       </HStack>
     </Box>

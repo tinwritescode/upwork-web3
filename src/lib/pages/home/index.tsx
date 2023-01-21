@@ -1,15 +1,10 @@
 import {
-  Avatar,
   Box,
   Button,
   Card,
-  CardBody,
-  CardHeader,
-  Divider,
   GridItem,
   Heading,
   HStack,
-  Progress,
   SimpleGrid,
   Spacer,
   Stack,
@@ -20,21 +15,43 @@ import {
   Tabs,
   Text,
   useMediaQuery,
-  VStack,
 } from "@chakra-ui/react";
-import localFont from "@next/font/local";
 import Link from "next/link";
+import { useEffect } from "react";
+import { env } from "../../../env/client.mjs";
 import AppContainer from "../../components/AppContainer";
 import AppJobCard from "../../components/AppJobCard";
-import AppLink from "../../components/AppLink";
+import {
+  selectAccountId,
+  selectWallet,
+} from "../../store/reducers/walletReducer";
+import { useAppSelector } from "../../store/store";
+import { HomeRight } from "./HomeRight";
 
 function HomePage() {
   const [smallerThan750] = useMediaQuery("(max-width: 750px)");
 
+  const wallet = useAppSelector(selectWallet);
+  const accountId = useAppSelector(selectAccountId);
+
+  useEffect(() => {
+    wallet
+      ?.viewMethod({
+        contractId: env.NEXT_PUBLIC_CONTRACT_NAME,
+        method: "get_status",
+        args: {
+          account_id: accountId,
+        },
+      })
+      .then((res) => {
+        console.log("get_status", res);
+      });
+  }, [accountId, wallet]);
+
   return (
     <>
       <AppContainer>
-        <SimpleGrid columns={4} gap={3}>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing={3}>
           <GridItem colSpan={3}>
             <Stack
               bgColor="blue.500"
@@ -88,11 +105,13 @@ function HomePage() {
                       </Link>
                     </TabPanel>
                     <TabPanel>
-                      <Text>
-                        Browse the most recent jobs that match your skills and
-                        profile description to the skills clients are looking
-                        for.
-                      </Text>
+                      <Box p={6}>
+                        <Text>
+                          Browse the most recent jobs that match your skills and
+                          profile description to the skills clients are looking
+                          for.
+                        </Text>
+                      </Box>
                     </TabPanel>
                     <TabPanel></TabPanel>
                   </TabPanels>
@@ -111,51 +130,3 @@ function HomePage() {
 export default HomePage;
 
 HomePage.title = "Upwork Landing Page";
-
-function HomeRight({}) {
-  return (
-    <GridItem>
-      <Stack>
-        <Card variant="outline">
-          <CardBody>
-            <VStack>
-              <Avatar src="https://bit.ly/tioluwani-kolawole" />
-              <Spacer p={1} />
-              <Heading size="md">Tin N.</Heading>
-              <Text noOfLines={2} textAlign="center" fontSize="sm">
-                Energy & Mechanical Engineering | Blockchain Architecture,
-                Blockchain
-              </Text>
-            </VStack>
-          </CardBody>
-
-          <Spacer p={1} />
-
-          <CardBody w="full" bg="green.50">
-            <Stack>
-              <Heading size="sm" fontWeight="semibold">
-                Profile completeness:
-              </Heading>
-              <Spacer p={0.25} />
-
-              <Progress value={60} size="xs" w="100%" colorScheme="green" />
-            </Stack>
-          </CardBody>
-        </Card>
-
-        <Card variant="outline">
-          <CardHeader>
-            <Heading size="md">Proposals</Heading>
-            <AppLink href="/my-proposals">My Proposal</AppLink>
-          </CardHeader>
-          <Divider />
-          <CardBody fontSize="sm">
-            <Text>
-              Looking for work? Browse jobs and get started on a proposal.
-            </Text>
-          </CardBody>
-        </Card>
-      </Stack>
-    </GridItem>
-  );
-}

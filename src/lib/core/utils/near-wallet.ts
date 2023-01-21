@@ -37,12 +37,10 @@ export class Wallet {
   createAccessKeyFor: string | undefined;
   accountId: string | undefined;
 
-  constructor(props?: WalletProps) {
-    const { createAccessKeyFor, network } = props || {
-      createAccessKeyFor: undefined,
-      network: "testnet",
-    };
-
+  constructor(
+    props: WalletProps = { createAccessKeyFor: "", network: "testnet" }
+  ) {
+    const { createAccessKeyFor, network } = props;
     // Login to a wallet passing a contractId will create a local
     // key, so the user skips signing non-payable transactions.
     // Omitting the accountId will result in the user being

@@ -21,6 +21,8 @@ export const clientSchema = z.object({
   NEXT_PUBLIC_CONTRACT_ADDRESS: z.string(),
   NEXT_PUBLIC_CHAIN_ID: z.coerce.number(),
   NEXT_PUBLIC_SESSION_EXPIRED_IN_DAYS: z.coerce.number(),
+  NEXT_PUBLIC_CONTRACT_NAME: z.string(),
+  NEXT_PUBLIC_NETWORK: z.string()
 });
 
 /**
@@ -38,4 +40,6 @@ export const clientEnv = {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   NEXT_PUBLIC_SESSION_EXPIRED_IN_DAYS: process.env.NEXT_PUBLIC_SESSION_EXPIRED_IN_DAYS,
+  NEXT_PUBLIC_CONTRACT_NAME: process.env.NEXT_PUBLIC_CONTRACT_NAME,
+  NEXT_PUBLIC_NETWORK: process.env.NEXT_PUBLIC_NETWORK
 };

@@ -1,6 +1,7 @@
 import type { RootState } from "./../store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Wallet } from "../../core/utils/near-wallet";
+import { Network, NetworkId } from "@near-wallet-selector/core";
 
 type WalletState = {
   wallet: Wallet | null;
@@ -12,13 +13,27 @@ const initialState: WalletState = {
   isLoading: true,
 };
 
-export const initWallet = createAsyncThunk("wallet/init", async () => {
-  const wallet = new Wallet();
+export const initWallet = createAsyncThunk(
+  "wallet/init",
+  async ({
+    contractId,
+    network,
+  }: {
+    contractId: string;
+    network: Network | NetworkId;
+  }) => {
+    const wallet = new Wallet({
+      createAccessKeyFor: contractId,
+      network,
+    });
 
-  await wallet.startUp();
+    await wallet.startUp().catch((e) => {
+      console.error("Wallet start up failed", e);
+    });
 
-  return wallet;
-});
+    return wallet;
+  }
+);
 
 export const walletSlice = createSlice({
   name: "wallet",
