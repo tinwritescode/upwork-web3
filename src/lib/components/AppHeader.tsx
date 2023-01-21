@@ -1,4 +1,4 @@
-import type { InputGroupProps } from "@chakra-ui/react";
+import { InputGroupProps, theme } from "@chakra-ui/react";
 import {
   Box,
   Button,
@@ -82,7 +82,7 @@ export default function AppHeader({}) {
       zIndex={10}
       bgColor="white"
     >
-      <Spacer p={2} />
+      <Spacer p={1.5} />
       <HStack gap={4}>
         <NextLink href="/">
           <Heading size="md">Freelancer</Heading>
@@ -105,7 +105,8 @@ export default function AppHeader({}) {
                   <Button
                     variant="link"
                     textAlign="left"
-                    fontWeight="medium"
+                    fontWeight="semibold"
+                    size="sm"
                     color={isCurrentUrl ? "blue.500" : "gray.800"}
                   >
                     {link.label}
@@ -116,20 +117,20 @@ export default function AppHeader({}) {
                   </Button>
                 </PopoverTrigger>
                 {link.items.length > 0 && (
-                  <PopoverContent shadow="xl" fontSize="sm">
+                  <PopoverContent shadow="xl" fontSize="xs">
                     <PopoverArrow />
                     <VStack alignItems="stretch">
                       <Spacer p={0.25} />
                       {link.items.map((item) => {
                         return (
                           <Link
-                            fontWeight="medium"
+                            fontWeight="semibold"
                             key={item.label}
                             color="gray.800"
                             p={2}
                             px={4}
                             _hover={{
-                              bgColor: "gray.100",
+                              bgColor: "green.100",
                             }}
                           >
                             {item.label}

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.20.12",
+    "@chakra-ui/anatomy": "^2.1.1",
     "@chakra-ui/react": "^2.4.7",
     "@coinbase/wallet-sdk": "^3.0.4",
     "@emotion/react": "^11.10.5",

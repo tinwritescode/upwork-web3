@@ -15,6 +15,7 @@ import {
   Tabs,
   Text,
   useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -29,23 +30,22 @@ import { useAppSelector } from "../../store/store";
 import { HomeRight } from "./HomeRight";
 
 function HomePage() {
-  const [smallerThan750] = useMediaQuery("(max-width: 750px)");
-
   const wallet = useAppSelector(selectWallet);
   const accountId = useAppSelector(selectAccountId);
 
   useEffect(() => {
-    wallet
-      ?.viewMethod({
-        contractId: env.NEXT_PUBLIC_CONTRACT_NAME,
-        method: "get_status",
-        args: {
-          account_id: accountId,
-        },
-      })
-      .then((res) => {
-        console.log("get_status", res);
-      });
+    if (accountId)
+      wallet
+        ?.viewMethod({
+          contractId: env.NEXT_PUBLIC_CONTRACT_NAME,
+          method: "get_status",
+          args: {
+            account_id: accountId,
+          },
+        })
+        .then((res) => {
+          console.log("get_status", res);
+        });
   }, [accountId, wallet]);
 
   return (
@@ -104,7 +104,7 @@ function HomePage() {
                         <AppJobCard title="Retrieve Crypto from Platform" />
                       </Link>
                     </TabPanel>
-                    <TabPanel>
+                    <TabPanel p={0}>
                       <Box p={6}>
                         <Text>
                           Browse the most recent jobs that match your skills and

@@ -42,7 +42,7 @@ function ConnectWalletButton() {
       label: "Settings",
       href: "/settings",
       icon: <SlSettings />,
-      colorScheme: "blue",
+      colorScheme: "black",
     },
     {
       label: "Disconnect",

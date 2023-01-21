@@ -36,8 +36,8 @@ enum PayType {
 }
 
 enum LevelRequired {
-  JUNIOR
-  MID
+  ENTRY
+  INTERMEDIATE
   EXPERT
 }
 
@@ -45,6 +45,18 @@ enum ProjectType {
   NEW
   ON_GOING
   MAINTAINANCE
+}
+
+enum ProjectScope {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum ProjectLong {
+  ONE_TO_THREE_MONTHS
+  THREE_TO_SIX_MONTHS
+  MORE_THAN_SIX_MONTHS
 }
 
 model Work {
@@ -63,6 +75,12 @@ model Work {
   levelRequired      LevelRequired
   projectType        ProjectType
   skillsAndExperties SkillsAndExperties[]
+  scope              ProjectScope
+  long               ProjectLong
+
+  // Budget
+  perHourBudget Int?
+  fixedBudget   Int?
 }
 
 model SkillsAndExperties {
