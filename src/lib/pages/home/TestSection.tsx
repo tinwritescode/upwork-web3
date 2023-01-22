@@ -31,7 +31,11 @@ function TestSection() {
   const { data: session } = trpc.auth.getSession.useQuery();
   const { data: client } = trpc.appClient.getClientInfo.useQuery();
   const { mutateAsync: registerClientAsync, isLoading: isRegisteringClient } =
-    trpc.appClient.registerClient.useMutation();
+    trpc.appClient.registerClient.useMutation({
+      onSuccess: () => {
+        utils.appClient.invalidate();
+      },
+    });
 
   const onLoginClicked = async () => {
     await loginAsync({

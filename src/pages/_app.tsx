@@ -6,6 +6,8 @@ import "../lib/core/styles/globals.css";
 import { trpc } from "../lib/core/utils/trpc";
 import DefaultLayout from "../lib/layouts/DefaultLayout";
 import { store } from "../lib/store/store";
+import NextNProgress from "nextjs-progressbar";
+import { theme } from "@chakra-ui/react";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -22,6 +24,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           <title>{title}</title>
         </Head>
         <Layout>
+          <NextNProgress color={theme.colors.green[500]} />
           <Component {...pageProps} />
         </Layout>
       </InnerProviders>
@@ -30,3 +33,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 };
 
 export default trpc.withTRPC(MyApp);
+
+declare global {
+  interface BigInt {
+    toJSON(): string;
+  }
+}
+
+// TODO: move to other files
+BigInt.prototype.toJSON = function (): string {
+  return this.toString();
+};

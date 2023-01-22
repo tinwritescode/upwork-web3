@@ -146,7 +146,7 @@ export default function AppHeader({}) {
           })}
         </Flex>
         <Spacer />
-        <SearchInput display={{ base: "none", md: "block" }} />
+        <SearchInput display={{ base: "none", xl: "block" }} />
 
         <Box display={{ base: "none", md: "block" }}>
           {/* ? */}

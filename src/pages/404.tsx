@@ -1,6 +1,6 @@
-import { Box, Button, Heading, Spacer, Stack } from "@chakra-ui/react";
+import { Box, Button, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import { AppContainer, AppLink } from "../lib/components";
+import { AppContainer } from "../lib/components";
 
 function Page404() {
   return (
@@ -43,7 +43,7 @@ function FourZeroFourContent() {
     <div className="contant_box_404">
       <Heading>Look like you&apos;re lost</Heading>
 
-      <p>the page you are looking for not avaible!</p>
+      <Text>the page you are looking for not avaible!</Text>
 
       <Spacer p={2} />
 
