@@ -1,4 +1,11 @@
-import { Box, Center, Flex, Spinner, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Container,
+  Flex,
+  Spinner,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import Head from "next/head";
 import { memo } from "react";
 import { AppHeader } from "../components";
@@ -32,16 +39,10 @@ const DefaultLayout = ({ children }: { children: React.ReactElement }) => {
           {/* {links.map(renderLinks)} */}
         </Flex>
       </Box>
-
-      {/* <DisconnectModal isOpen={isOpen} onClose={onClose} />
-      <ConnectModal
-        isOpen={connectWalletState.isOpen}
-        onClose={connectWalletState.onClose}
-      /> */}
     </Flex>
   ) : (
-    <Center>
-      <Spinner />
+    <Center h="calc(100vh)">
+      <Spinner size="lg" />
     </Center>
   );
 };
