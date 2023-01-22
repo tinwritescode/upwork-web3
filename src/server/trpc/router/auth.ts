@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { env } from "../../../env/server.mjs";
 import { publicProcedure, router } from "../trpc";
 
 export const authRouter = router({
@@ -19,73 +20,59 @@ export const authRouter = router({
 
     return {
       nonce: loginNonce,
+      message: `I agree to the terms and conditions of ${env.APP_NAME}`,
     };
   }),
-  // login: publicProcedure
-  //   .input(
-  //     z.object({
-  //       address: z.string(),
-  //       signature: z.string(),
-  //     })
-  //   )
-  //   .mutation(async ({ input, ctx }) => {
-  //     const { address, signature } = input;
-  //     const nonce = ctx.session.loginNonce;
+  login: publicProcedure
+    .input(
+      z.object({
+        address: z.string(),
+        // signature: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { address } = input;
+      // TODO: check for signature + nonce match with address
 
-  //     const recoveredAddr = recoverTypedSignature({
-  //       data: [
-  //         {
-  //           name: "nonce",
-  //           type: "string",
-  //           value: nonce?.toString(),
-  //         },
-  //       ],
-  //       signature,
-  //       version: SignTypedDataVersion.V1,
-  //     });
+      const user = await ctx.prisma.user.upsert({
+        where: {
+          address,
+        },
+        update: {},
+        create: {
+          address,
+        },
+      });
 
-  //     if (recoveredAddr !== address) {
-  //       throw new Error("Invalid address");
-  //     }
+      ctx.session.user = {
+        isLoggedIn: true,
+        address,
+        timestamp: Date.now(),
+        sqlid: user.id.toString(),
+      };
 
-  //     const user = await ctx.prisma.user.upsert({
-  //       where: {
-  //         address,
-  //       },
-  //       update: {},
-  //       create: {
-  //         address,
-  //       },
-  //     });
+      await ctx.session.save();
 
-  //     ctx.session.user = {
-  //       isLoggedIn: true,
-  //       address,
-  //       timestamp: Date.now(),
-  //       sqlid: user.id.toString(),
-  //     };
+      return {
+        address,
+        message: "Logged in",
+      };
+    }),
+  logout: publicProcedure.mutation(async ({ ctx }) => {
+    ctx.session.user = undefined;
 
-  //     await ctx.session.save();
+    await ctx.session.save();
 
-  //     return {
-  //       address,
-  //       message: "Logged in",
-  //     };
-  //   }),
-  // logout: publicProcedure.mutation(async ({ ctx }) => {
-  //   ctx.session.user = undefined;
-
-  //   await ctx.session.save();
-
-  //   return {
-  //     message: "Logged out",
-  //   };
-  // }),
-  // getSession: publicProcedure.query(async ({ ctx }) => {
-  //   return (
-  //     ctx.session.user || {
-  //       isLoggedIn: false,
-  //     }
-  //   );
-  // }),
+    return {
+      message: "Logged out",
+    };
+  }),
+  getSession: publicProcedure.query(async ({ ctx }) => {
+    return (
+      ctx.session.user ||
+      ({
+        isLoggedIn: false,
+      } as { isLoggedIn: false })
+    );
+  }),
 });

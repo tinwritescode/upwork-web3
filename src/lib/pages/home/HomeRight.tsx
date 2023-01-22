@@ -13,6 +13,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { AppLink } from "../../components";
+import TestSection from "./TestSection";
 
 export function HomeRight({}) {
   return (
@@ -44,6 +45,9 @@ export function HomeRight({}) {
             </Stack>
           </CardBody>
         </Card>
+
+        {/* TODO: test only, remove later */}
+        <TestSection />
 
         <Card variant="outline">
           <CardHeader>

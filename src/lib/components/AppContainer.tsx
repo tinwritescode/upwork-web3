@@ -8,7 +8,7 @@ type Props = {
 
 function AppContainer({ children, ...rest }: Props) {
   return (
-    <Container maxW="6xl" {...rest}>
+    <Container maxW="6xl" {...rest} pb={20}>
       <Spacer p={3} />
       {children}
     </Container>

@@ -14,20 +14,20 @@ model User {
   id      BigInt @id @default(autoincrement())
   address String @unique
 
-  clientId     BigInt?  @unique
-  Client       Client[]
-  WorkAssigned Work[]
+  clientId BigInt? @unique
+  Client   Client?
+
+  JobAssigned Job[]
 }
 
 model Client {
-  id BigInt @id @default(autoincrement())
+  id   BigInt @id @default(autoincrement())
+  name String
 
-  name    String
-  address String
+  Job Job[]
 
-  User   User   @relation(fields: [userId], references: [id])
-  userId BigInt
-  Work   Work[]
+  userAddress String @unique
+  User        User   @relation(fields: [userAddress], references: [address], onDelete: Cascade)
 }
 
 enum PayType {
@@ -59,13 +59,13 @@ enum ProjectLong {
   MORE_THAN_SIX_MONTHS
 }
 
-model Work {
+model Job {
   id BigInt @id @default(autoincrement())
 
   assignedTo BigInt
-  User       User   @relation(fields: [assignedTo], references: [id])
+  User       User   @relation(fields: [assignedTo], references: [id], onDelete: Cascade)
 
-  Client   Client @relation(fields: [clientId], references: [id])
+  Client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId BigInt
 
   // Fields
@@ -86,8 +86,8 @@ model Work {
 model SkillsAndExperties {
   id BigInt @id @default(autoincrement())
 
-  Work   Work   @relation(fields: [workId], references: [id])
-  workId BigInt
+  Job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId BigInt @map("workId")
 
   subItems SkillSubItem[]
 
@@ -101,6 +101,6 @@ model SkillSubItem {
   // name
   name String
 
-  SkillsAndExperties   SkillsAndExperties? @relation(fields: [skillsAndExpertiesId], references: [id])
+  SkillsAndExperties   SkillsAndExperties? @relation(fields: [skillsAndExpertiesId], references: [id], onDelete: Cascade)
   skillsAndExpertiesId BigInt?
 }
