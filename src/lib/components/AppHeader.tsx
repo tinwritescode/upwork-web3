@@ -1,4 +1,4 @@
-import { InputGroupProps, theme } from "@chakra-ui/react";
+import type { InputGroupProps } from "@chakra-ui/react";
 import {
   Box,
   Button,

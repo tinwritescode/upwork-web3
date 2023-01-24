@@ -1,7 +1,9 @@
+import { publicProcedure } from "./../trpc";
 import { TRPCError } from "@trpc/server";
 import { clientProtectedProcedure } from "../middlewares/client";
 import { router } from "../trpc";
 import { jobCreateSchema } from "./../validation/job";
+import { z } from "zod";
 
 export const jobRouter = router({
   createJob: clientProtectedProcedure
@@ -62,4 +64,20 @@ export const jobRouter = router({
         return job;
       }
     ),
+  getJobs: publicProcedure
+    .input(
+      z.object({
+        offset: z.number().optional(),
+        limit: z.number().optional(),
+      })
+    )
+    .query(async ({ ctx, input: { limit, offset } }) => {
+      const jobs = await ctx.prisma.job.findMany({
+        include: {},
+        take: limit,
+        skip: offset,
+      });
+
+      return jobs;
+    }),
 });

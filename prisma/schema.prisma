@@ -92,13 +92,11 @@ model Job {
 model SkillsAndExperties {
   id BigInt @id @default(autoincrement())
 
-  Job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId BigInt @map("workId")
+  Job Job[]
 
   subItems SkillSubItem[]
 
   skill String
-  exp   Int
 }
 
 model SkillSubItem {

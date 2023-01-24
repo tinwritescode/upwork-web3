@@ -13,6 +13,7 @@
   "dependencies": {
     "@babel/core": "^7.20.12",
     "@chakra-ui/anatomy": "^2.1.1",
+    "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.4.7",
     "@coinbase/wallet-sdk": "^3.0.4",
     "@emotion/react": "^11.10.5",
@@ -32,6 +33,7 @@
     "@prisma/client": "^4.8.1",
     "@reduxjs/toolkit": "^1.9.1",
     "@tanstack/react-query": "^4.22.0",
+    "@tanstack/react-table": "^8.7.6",
     "@trpc/client": "^10.9.0",
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
@@ -54,6 +56,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
+    "react-paginate-chakra-ui": "^0.1.2",
     "react-redux": "^8.0.5",
     "react-scripts": "3.4.3",
     "superjson": "1.9.1",

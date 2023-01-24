@@ -16,10 +16,13 @@ import { memo } from "react";
 import { SlLogout, SlSettings, SlWallet } from "react-icons/sl";
 import { selectWallet } from "../store/reducers/walletReducer";
 import { useAppSelector } from "../store/store";
+import { RiAdminFill } from "react-icons/ri";
+import { trpc } from "../core/utils/trpc";
 
 function ConnectWalletButton() {
   const wallet = useAppSelector(selectWallet);
   const toast = useToast();
+  const { data } = trpc.auth.getSession.useQuery();
   const onConnectWalletClicked = async () => {
     if (!wallet)
       return toast({
@@ -45,6 +48,13 @@ function ConnectWalletButton() {
       colorScheme: "black",
     },
     {
+      label: "Admin",
+      requireAdmin: true,
+      href: "/admin",
+      icon: <RiAdminFill />,
+      colorScheme: "black",
+    },
+    {
       label: "Disconnect",
       href: "/",
       icon: <SlLogout />,
@@ -67,19 +77,24 @@ function ConnectWalletButton() {
         <PopoverArrow />
         <PopoverBody>
           <Stack>
-            {links.map((link) => (
-              <Link href={link.href} key={link.label}>
-                <Button
-                  onClick={link.onClick}
-                  leftIcon={link.icon}
-                  colorScheme={link.colorScheme}
-                  variant="link"
-                  size={{ base: "sm", md: "md" }}
-                >
-                  {link.label}
-                </Button>
-              </Link>
-            ))}
+            {links.map((link) => {
+              if (link.requireAdmin && data?.user?.role !== "ADMIN")
+                return null;
+
+              return (
+                <Link href={link.href} key={link.label}>
+                  <Button
+                    onClick={link.onClick}
+                    leftIcon={link.icon}
+                    colorScheme={link.colorScheme}
+                    variant="link"
+                    size={{ base: "sm", md: "md" }}
+                  >
+                    {link.label}
+                  </Button>
+                </Link>
+              );
+            })}
           </Stack>
         </PopoverBody>
       </PopoverContent>

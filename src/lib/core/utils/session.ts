@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 // this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
 import type { IronSessionOptions } from "iron-session";
 import { env } from "../../../env/server.mjs";
@@ -7,6 +8,7 @@ export type User = {
   timestamp: number;
   address: string;
   sqlid: string;
+  role: Role;
 };
 
 export const sessionOptions: IronSessionOptions = {

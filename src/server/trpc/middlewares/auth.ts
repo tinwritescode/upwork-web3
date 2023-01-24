@@ -30,3 +30,13 @@ export const isAuth = publicMiddleware(async ({ ctx, next }) => {
 });
 
 export const protectedProcedure = publicProcedure.use(isAuth);
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  if (ctx.session?.user?.role !== "ADMIN") {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not authorized to access this resource",
+    });
+  }
+
+  return next();
+});

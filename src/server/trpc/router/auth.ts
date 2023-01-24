@@ -49,6 +49,7 @@ export const authRouter = router({
         address,
         timestamp: Date.now(),
         sqlid: user.id.toString(),
+        role: user.role,
       };
 
       await ctx.session.save();
@@ -69,10 +70,18 @@ export const authRouter = router({
   }),
   getSession: publicProcedure.query(async ({ ctx }) => {
     return (
-      ctx.session.user ||
+      ctx.session ||
       ({
         isLoggedIn: false,
-      } as { isLoggedIn: false })
+        user: {
+          role: "USER",
+        },
+      } as {
+        isLoggedIn: false;
+        user: {
+          role: "USER";
+        };
+      })
     );
   }),
 });

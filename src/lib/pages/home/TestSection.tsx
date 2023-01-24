@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -7,6 +8,7 @@ import {
   FormLabel,
   Heading,
   Stack,
+  Tag,
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -48,7 +50,7 @@ function TestSection() {
   };
 
   const onRegisterClientClicked = async () => {
-    if (!session?.isLoggedIn) {
+    if (!session?.user?.isLoggedIn) {
       throw new Error("Not logged in");
     }
 
@@ -66,10 +68,9 @@ function TestSection() {
       </CardHeader>
       <Divider />
       <CardBody>
-        {session?.isLoggedIn === true ? (
+        {session?.user?.isLoggedIn === true ? (
           <Stack>
-            <Text>Logged in as {session.address}</Text>
-
+            <Text>Logged in as {session.user.address}</Text>
             <Button
               onClick={onRegisterClientClicked}
               disabled={!!client?.userAddress}
@@ -82,11 +83,27 @@ function TestSection() {
               You are {client?.userAddress ? "registered" : "not registered"} as
               a client
             </FormLabel>
-
             {client?.userAddress && (
               <Link href="/jobs/create">
                 <Button colorScheme="green" w="full">
                   Create a job
+                </Button>
+              </Link>
+            )}
+
+            <Box>
+              Role:{" "}
+              <Tag
+                colorScheme={session.user.role === "ADMIN" ? "red" : "green"}
+              >
+                {session.user.role}
+              </Tag>
+            </Box>
+
+            {session.user.role === "ADMIN" && (
+              <Link href="/admin">
+                <Button colorScheme="red" w="full">
+                  Go to Admin
                 </Button>
               </Link>
             )}

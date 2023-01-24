@@ -14,8 +14,6 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useMediaQuery,
-  useToast,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useEffect } from "react";

@@ -1,3 +1,4 @@
+import { adminRouter } from "./admin/index";
 import { jobRouter } from "./job";
 import { clientRouter } from "./appClient";
 import { authRouter } from "./auth";
@@ -7,6 +8,7 @@ export const appRouter = router({
   auth: authRouter,
   appClient: clientRouter,
   job: jobRouter,
+  admin: adminRouter,
 });
 
 // export type definition of API
