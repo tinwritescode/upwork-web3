@@ -1,4 +1,6 @@
 import {
+  Text,
+  Box,
   Button,
   Card,
   CardBody,
@@ -8,9 +10,13 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
+  HStack,
   Input,
+  InputGroup,
+  InputLeftAddon,
+  InputLeftElement,
+  InputRightAddon,
   SimpleGrid,
-  Stack,
   useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
@@ -68,7 +74,7 @@ function JobCreate() {
         </CardHeader>
         <Divider />
         <CardBody>
-          <SimpleGrid columns={2} gap={4}>
+          <SimpleGrid columns={{ base: 1, sm: 2 }} gap={4}>
             <FormControl
               isInvalid={!!formik.touched.title && !!formik.errors.title}
             >
@@ -88,18 +94,36 @@ function JobCreate() {
                 !!formik.touched.fixedBudget && !!formik.errors.fixedBudget
               }
             >
-              <FormLabel>Fixed Budget</FormLabel>
-              <Input {...formik.getFieldProps("fixedBudget")} />
+              <FormLabel>Budget</FormLabel>
+              <HStack>
+                <Box w={48}>
+                  <Select
+                    {...formik.getFieldProps("payType")}
+                    options={[
+                      { value: "HOURLY", label: "Hourly" },
+                      { value: "FIXED", label: "Fixed" },
+                    ]}
+                    onChange={(e) => {
+                      formik.setFieldValue("payType", e?.value as string);
+                    }}
+                    value={undefined}
+                  />
+                </Box>
+                <InputGroup>
+                  {formik.values.payType === "FIXED" ? (
+                    <Input {...formik.getFieldProps("fixedBudget")} />
+                  ) : (
+                    <Input {...formik.getFieldProps("perHourBudget")} />
+                  )}
+
+                  <InputRightAddon>
+                    <Text>
+                      {`USDT${formik.values.payType === "FIXED" ? "" : "/hr"}`}
+                    </Text>
+                  </InputRightAddon>
+                </InputGroup>
+              </HStack>
               <FormErrorMessage>{formik.errors.fixedBudget}</FormErrorMessage>
-            </FormControl>
-            <FormControl
-              isInvalid={
-                !!formik.touched.perHourBudget && !!formik.errors.perHourBudget
-              }
-            >
-              <FormLabel>Per Hour Budget</FormLabel>
-              <Input {...formik.getFieldProps("perHourBudget")} />
-              <FormErrorMessage>{formik.errors.perHourBudget}</FormErrorMessage>
             </FormControl>
             <FormControl
               isInvalid={
@@ -150,25 +174,6 @@ function JobCreate() {
               />
 
               <FormErrorMessage>{formik.errors.long}</FormErrorMessage>
-            </FormControl>
-            <FormControl
-              isInvalid={!!formik.touched.payType && !!formik.errors.payType}
-            >
-              <FormLabel>Pay Type</FormLabel>
-              <Select
-                {...formik.getFieldProps("payType")}
-                onChange={(e) => {
-                  formik.setFieldValue("payType", e?.value as string);
-                }}
-                value={undefined}
-                isMulti={false}
-                options={[
-                  { value: "HOURLY", label: "Hourly" },
-                  { value: "FIXED", label: "Fixed" },
-                ]}
-              />
-
-              <FormErrorMessage>{formik.errors.payType}</FormErrorMessage>
             </FormControl>
             <FormControl
               isInvalid={
