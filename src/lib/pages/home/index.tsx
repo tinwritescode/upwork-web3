@@ -2,10 +2,18 @@ import {
   Box,
   Button,
   Card,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   GridItem,
   Heading,
   HStack,
   SimpleGrid,
+  Skeleton,
   Spacer,
   Stack,
   Tab,
@@ -14,8 +22,12 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useRouter } from "next/router.js";
+import { useEffect, useState } from "react";
+import { Paginate } from "react-paginate-chakra-ui";
+import slugify from "slugify";
 import { env } from "../../../env/client.mjs";
 import AppContainer from "../../components/AppContainer";
 import AppJobCard from "../../components/AppJobCard";
@@ -34,10 +46,16 @@ function HomePage() {
   const wallet = useAppSelector(selectWallet);
   const accountId = useAppSelector(selectAccountId);
   const { limit, setLimit } = useLimit(INITIAL_LIMIT);
+  const [offset, setOffset] = useState(0);
   const { data: jobList, isLoading: isJobListLoading } =
     trpc.job.getJobs.useQuery({
       limit: limit,
+      offset,
     });
+  const router = useRouter();
+
+  // Drawer
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (accountId)
@@ -53,6 +71,12 @@ function HomePage() {
           console.log("get_status", res);
         });
   }, [accountId, wallet]);
+
+  useEffect(() => {
+    if (router.query.page && Number(router.query.page) > 1) {
+      setOffset((Number(router.query.page) - 1) * limit);
+    }
+  }, [limit, router.query.page]);
 
   return (
     <>
@@ -106,13 +130,43 @@ function HomePage() {
                         </Text>
                       </Box>
 
-                      {jobList?.map((job) => (
+                      {isJobListLoading && (
+                        <Stack spacing={3}>
+                          {Array.from({ length: 10 }).map((_, i) => (
+                            <Box px={6} key={i}>
+                              <Skeleton height="100px" rounded="md" />
+                            </Box>
+                          ))}
+                        </Stack>
+                      )}
+
+                      {jobList?.jobs.map((job) => (
                         <AppJobCard
-                          href={`/job/${job.id}`}
+                          href={`/jobs/${slugify(job.title)}-${job.id}`}
                           key={job.id.toString()}
                           job={job}
+                          onClick={() => {
+                            onOpen();
+                          }}
                         />
                       ))}
+
+                      <Paginate
+                        page={router.query.page || 1}
+                        count={jobList?.total || 0}
+                        onPageChange={(page: any) => {
+                          router.push(
+                            {
+                              query: {
+                                page: page,
+                              },
+                            },
+                            undefined,
+                            { shallow: true }
+                          );
+                        }}
+                        pageSize={limit}
+                      />
                     </TabPanel>
                     <TabPanel p={0}>
                       <Box p={6}>
@@ -133,6 +187,22 @@ function HomePage() {
           <HomeRight />
         </SimpleGrid>
       </AppContainer>
+
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerHeader>Blog</DrawerHeader>
+          <DrawerBody>
+            <DrawerCloseButton />
+            <DrawerFooter>
+              <Button variant="outline" mr={3}>
+                Cancel
+              </Button>
+              <Button colorScheme="blue">Save</Button>
+            </DrawerFooter>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

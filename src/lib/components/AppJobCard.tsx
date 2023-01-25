@@ -1,6 +1,7 @@
 import {
   Badge,
   LinkBox,
+  LinkBoxProps,
   LinkOverlay,
   Spacer,
   Text,
@@ -8,16 +9,37 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import type { Job, ProjectType } from "@prisma/client";
+import type {
+  Job,
+  LevelRequired,
+  ProjectType,
+  SkillsAndExperties,
+  SkillSubItem,
+} from "@prisma/client";
 import moment from "moment";
 
 type Props = {
   href: string;
-  job: Job;
-};
+  job: Job & {
+    skillsAndExperties: (SkillSubItem & {
+      SkillsAndExperties: SkillsAndExperties | null;
+    })[];
+  };
+} & LinkBoxProps;
 
-function AppJobCard({ job, href }: Props) {
-  const { title, projectType, payType, long, createdAt } = job;
+function AppJobCard({ job, href, ...rest }: Props) {
+  const {
+    title,
+    projectType,
+    payType,
+    long,
+    createdAt,
+    fixedBudget,
+    perHourBudget,
+    content,
+    levelRequired,
+    skillsAndExperties,
+  } = job;
 
   const payTypeText = payType === "HOURLY" ? "Hourly" : "Fixed Price";
   const renderProjectType = (projectType: ProjectType) => {
@@ -32,9 +54,25 @@ function AppJobCard({ job, href }: Props) {
         return "Unknown";
     }
   };
+  const budgetText =
+    payType === "HOURLY"
+      ? `${perHourBudget} NEAR / hour`
+      : `${fixedBudget} NEAR`;
+  const renderLevelRequired = (levelRequired: LevelRequired) => {
+    switch (levelRequired) {
+      case "ENTRY":
+        return "Entry";
+      case "INTERMEDIATE":
+        return "Intermediate";
+      case "EXPERT":
+        return "Expert";
+      default:
+        return "Unknown";
+    }
+  };
 
   return (
-    <LinkBox>
+    <LinkBox {...rest}>
       <VStack
         alignItems="stretch"
         p={6}
@@ -42,29 +80,27 @@ function AppJobCard({ job, href }: Props) {
           bg: "green.50",
         }}
       >
-        <LinkOverlay href={href}>
-          <Text fontSize="lg" fontWeight="semibold">
-            {title}
-          </Text>
-        </LinkOverlay>
+        <Text fontSize="lg" fontWeight="semibold">
+          {title}
+        </Text>
 
         <Text fontSize="sm" color="gray.600">
-          <b>{payTypeText}</b> - Entry level - Est. Budget: $400 - Posted{" "}
-          {moment(createdAt).fromNow()}
+          <b>{payTypeText}</b> - {renderLevelRequired(levelRequired)} level -
+          Est. Budget: {budgetText} - Posted {moment(createdAt).fromNow()}
         </Text>
 
-        <Text fontSize="sm">
-          quick job for someone with the knowledge, i sent crypto to the
-          platform by accident and need to retrieve it. If you cant do it please
-          dont try.
-        </Text>
+        <Text fontSize="sm">{content}</Text>
 
         <Spacer p={0.5} />
 
         <Wrap>
-          <WrapItem>
-            <Badge variant="rounded">Blockchain</Badge>
-          </WrapItem>
+          {skillsAndExperties.map((skill) => (
+            <WrapItem key={skill.id.toString()}>
+              <Badge variant="rounded" colorScheme="blue">
+                {skill.name}
+              </Badge>
+            </WrapItem>
+          ))}
         </Wrap>
       </VStack>
     </LinkBox>

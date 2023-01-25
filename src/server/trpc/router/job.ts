@@ -75,11 +75,24 @@ export const jobRouter = router({
       })
     )
     .query(async ({ ctx, input: { limit, offset } }) => {
-      const jobs = await ctx.prisma.job.findMany({
-        take: limit,
-        skip: offset,
-      });
+      const [jobs, jobCount] = await Promise.all([
+        await ctx.prisma.job.findMany({
+          take: limit,
+          skip: offset,
+          include: {
+            skillsAndExperties: {
+              include: {
+                SkillsAndExperties: true,
+              },
+            },
+          },
+        }),
+        await ctx.prisma.job.count(),
+      ]);
 
-      return jobs;
+      return {
+        jobs,
+        total: jobCount,
+      };
     }),
 });
