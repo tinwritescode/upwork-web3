@@ -1,0 +1,51 @@
+# fly.toml file generated for upwork-web3 on 2023-01-25T09:30:44+07:00
+
+app = "upwork-web3"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+[build.args]
+DATABASE_URL = "postgres://tinwritescode:KyqVil73nSDE@ep-withered-lab-520435.ap-southeast-1.aws.neon.tech/neondb"
+JWT_SECRET = "hello24@Y(HCNSfasf24908@2411240128412092135214"
+NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY = "533d4b8f6a11de77ba81"
+NEXT_PUBLIC_CONTRACT_ADDRESS = "0x4a98325718c40e8c584bcf59bedd26ce6ad16245"
+NEXT_PUBLIC_SESSION_EXPIRED_IN_DAYS = "7"
+NEXT_PUBLIC_CHAIN_ID = "1"
+NEXT_PUBLIC_CONTRACT_NAME = "dev-1674288645405-41384689778645"
+NEXT_PUBLIC_NETWORK = "testnet"
+
+APP_NAME = "Upwork Web3"
+
+[env]
+PORT = "8080"
+
+[experimental]
+auto_rollback = true
+
+[[services]]
+http_checks = []
+internal_port = 8080
+processes = ["app"]
+protocol = "tcp"
+script_checks = []
+[services.concurrency]
+hard_limit = 25
+soft_limit = 20
+type = "connections"
+
+[[services.ports]]
+force_https = true
+handlers = ["http"]
+port = 80
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443
+
+[[services.tcp_checks]]
+grace_period = "1s"
+interval = "15s"
+restart_limit = 0
+timeout = "2s"

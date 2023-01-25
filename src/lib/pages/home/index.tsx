@@ -15,11 +15,12 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import Link from "next/link";
 import { useEffect } from "react";
 import { env } from "../../../env/client.mjs";
 import AppContainer from "../../components/AppContainer";
 import AppJobCard from "../../components/AppJobCard";
+import { useLimit } from "../../core/hooks/useLimit";
+import { trpc } from "../../core/utils/trpc";
 import {
   selectAccountId,
   selectWallet,
@@ -27,9 +28,16 @@ import {
 import { useAppSelector } from "../../store/store";
 import { HomeRight } from "./HomeRight";
 
+const INITIAL_LIMIT = 10;
+
 function HomePage() {
   const wallet = useAppSelector(selectWallet);
   const accountId = useAppSelector(selectAccountId);
+  const { limit, setLimit } = useLimit(INITIAL_LIMIT);
+  const { data: jobList, isLoading: isJobListLoading } =
+    trpc.job.getJobs.useQuery({
+      limit: limit,
+    });
 
   useEffect(() => {
     if (accountId)
@@ -98,9 +106,13 @@ function HomePage() {
                         </Text>
                       </Box>
 
-                      <Link href="/jobs">
-                        <AppJobCard title="Retrieve Crypto from Platform" />
-                      </Link>
+                      {jobList?.map((job) => (
+                        <AppJobCard
+                          href={`/job/${job.id}`}
+                          key={job.id.toString()}
+                          job={job}
+                        />
+                      ))}
                     </TabPanel>
                     <TabPanel p={0}>
                       <Box p={6}>

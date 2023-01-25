@@ -16,7 +16,7 @@ export const jobCreateSchema = z
     payType: z.nativeEnum(PayType),
     projectType: z.nativeEnum(ProjectType),
     scope: z.nativeEnum(ProjectScope),
-    skillsAndExperties: z.array(z.string()),
+    skillsAndExperties: z.array(z.coerce.bigint()),
     fixedBudget: z.coerce.number(),
     perHourBudget: z.coerce.number(),
   })

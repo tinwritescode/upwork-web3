@@ -80,19 +80,20 @@ model Job {
   payType            PayType
   levelRequired      LevelRequired
   projectType        ProjectType
-  skillsAndExperties SkillsAndExperties[]
+  skillsAndExperties SkillSubItem[]
   scope              ProjectScope
   long               ProjectLong
 
   // Budget
   perHourBudget Int?
   fixedBudget   Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model SkillsAndExperties {
   id BigInt @id @default(autoincrement())
-
-  Job Job[]
 
   subItems SkillSubItem[]
 
@@ -103,8 +104,10 @@ model SkillSubItem {
   id BigInt @id @default(autoincrement())
 
   // name
-  name String
+  name String @unique
 
   SkillsAndExperties   SkillsAndExperties? @relation(fields: [skillsAndExpertiesId], references: [id], onDelete: Cascade)
   skillsAndExpertiesId BigInt?
+  Job                  Job?                @relation(fields: [jobId], references: [id])
+  jobId                BigInt?
 }

@@ -1,5 +1,4 @@
 import {
-  Text,
   Box,
   Button,
   Card,
@@ -9,25 +8,27 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  GridItem,
   Heading,
   HStack,
   Input,
   InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
   InputRightAddon,
   SimpleGrid,
+  Text,
   useToast,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import type { JobCreateSchema } from "../../../../server/trpc/validation/job";
 import { jobCreateSchema } from "../../../../server/trpc/validation/job";
 import { AppContainer } from "../../../components";
-import { Select } from "chakra-react-select";
 import { trpc } from "../../../core/utils/trpc";
 
 function JobCreate() {
+  const router = useRouter();
   const toast = useToast();
   const { mutateAsync: createJobAsync } = trpc.job.createJob.useMutation();
   const formik = useFormik<JobCreateSchema>({
@@ -52,10 +53,14 @@ function JobCreate() {
             title: "Creating Job",
             description: "Please wait...",
           },
-          success: (data) => ({
-            title: "Job Created",
-            description: JSON.stringify(data),
-          }),
+          success: (data) => {
+            router.push(`/jobs/${data.id}`);
+
+            return {
+              title: "Job Created",
+              description: JSON.stringify(data),
+            };
+          },
           error: (e) => ({
             title: "Error",
             description: e?.message,
@@ -65,6 +70,8 @@ function JobCreate() {
     },
     validationSchema: toFormikValidationSchema(jobCreateSchema),
   });
+  const { data: skills, isLoading: skillsLoading } =
+    trpc.admin.skillsAndExpertises.getAll.useQuery({});
 
   return (
     <AppContainer>
@@ -216,6 +223,36 @@ function JobCreate() {
               />
               <FormErrorMessage>{formik.errors.scope}</FormErrorMessage>
             </FormControl>
+
+            <GridItem colSpan={2}>
+              <FormControl isInvalid={!!formik.errors.skillsAndExperties}>
+                <FormLabel>Skills and Experties</FormLabel>
+                <Select
+                  {...formik.getFieldProps("skillsAndExperties")}
+                  options={
+                    skills?.data?.map((skill) => ({
+                      label: skill.skill,
+                      options: skill.subItems.map((exp) => ({
+                        label: exp.name,
+                        value: exp.id,
+                      })),
+                    })) ?? []
+                  }
+                  isMulti
+                  isLoading={skillsLoading}
+                  loadingMessage={() => "Loading"}
+                  value={undefined}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      "skillsAndExperties",
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      e?.map((item) => item?.value.toString()) as string[]
+                    );
+                  }}
+                />
+              </FormControl>
+            </GridItem>
           </SimpleGrid>
 
           <Button

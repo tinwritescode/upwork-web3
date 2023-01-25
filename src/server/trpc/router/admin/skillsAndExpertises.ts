@@ -1,6 +1,6 @@
 import { createSubSkillSchema } from "./validation/skillsAndExpertises";
 import { adminProcedure } from "./../../middlewares/auth";
-import { router } from "../../trpc";
+import { publicProcedure, router } from "../../trpc";
 import { z } from "zod";
 
 export const skillsAndExpertiesRouter = router({
@@ -18,7 +18,7 @@ export const skillsAndExpertiesRouter = router({
       });
       return createdSkill;
     }),
-  getAll: adminProcedure
+  getAll: publicProcedure
     .input(
       z.object({
         limit: z.number().default(10),
@@ -32,14 +32,13 @@ export const skillsAndExpertiesRouter = router({
           skip: offset,
           include: {
             _count: {
-              select: { Job: true, subItems: true },
+              select: { subItems: true },
             },
+            subItems: true,
           },
         }),
         ctx.prisma.skillsAndExperties.count(),
       ]);
-
-      console.table([skills[0]]);
 
       return {
         data: skills.map((skill) => {

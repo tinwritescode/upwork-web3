@@ -55,9 +55,12 @@ export const jobRouter = router({
             clientId: BigInt(client.id),
             fixedBudget,
             perHourBudget,
-            // skillsAndExperties: {
-            // TODO: admin should be able to add skills and experties
-            // },
+
+            skillsAndExperties: {
+              connect: skillsAndExperties.map((skill) => ({
+                id: skill,
+              })),
+            },
           },
         });
 
@@ -67,13 +70,12 @@ export const jobRouter = router({
   getJobs: publicProcedure
     .input(
       z.object({
-        offset: z.number().optional(),
-        limit: z.number().optional(),
+        offset: z.number().default(0),
+        limit: z.number().default(10),
       })
     )
     .query(async ({ ctx, input: { limit, offset } }) => {
       const jobs = await ctx.prisma.job.findMany({
-        include: {},
         take: limit,
         skip: offset,
       });
