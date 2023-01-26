@@ -14,6 +14,7 @@ import {
   HStack,
   SimpleGrid,
   Skeleton,
+  SkeletonText,
   Spacer,
   Stack,
   Tab,
@@ -39,6 +40,7 @@ import {
 } from "../../store/reducers/walletReducer";
 import { useAppSelector } from "../../store/store";
 import { HomeRight } from "./HomeRight";
+import HomeProvider, { useHomeContext } from "./provider";
 
 const INITIAL_LIMIT = 10;
 
@@ -53,6 +55,7 @@ function HomePage() {
       offset,
     });
   const router = useRouter();
+  const { dispatch, selectedJobId } = useHomeContext();
 
   // Drawer
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -146,6 +149,10 @@ function HomePage() {
                           key={job.id.toString()}
                           job={job}
                           onClick={() => {
+                            dispatch({
+                              type: "SELECT_JOB",
+                              payload: job.id.toString(),
+                            });
                             onOpen();
                           }}
                         />
@@ -158,7 +165,7 @@ function HomePage() {
                           router.push(
                             {
                               query: {
-                                page: page,
+                                page: page + 1,
                               },
                             },
                             undefined,
@@ -188,24 +195,55 @@ function HomePage() {
         </SimpleGrid>
       </AppContainer>
 
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader>Blog</DrawerHeader>
-          <DrawerBody>
-            <DrawerCloseButton />
-            <DrawerFooter>
-              <Button variant="outline" mr={3}>
-                Cancel
-              </Button>
-              <Button colorScheme="blue">Save</Button>
-            </DrawerFooter>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      <JobDetailDrawer isOpen={isOpen} onClose={onClose} />
     </>
   );
 }
+
+const JobDetailDrawer = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  const { selectedJobId, dispatch } = useHomeContext();
+  const { data, isLoading } = trpc.job.getJob.useQuery(
+    { id: BigInt(selectedJobId || "") },
+    {
+      enabled: selectedJobId != null,
+    }
+  );
+
+  return (
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerHeader>
+          {isLoading ? (
+            <SkeletonText noOfLines={1} spacing="4" skeletonHeight={8} />
+          ) : (
+            data?.title
+          )}
+        </DrawerHeader>
+        <DrawerBody>
+          <DrawerCloseButton />
+          {isLoading ? (
+            <SkeletonText noOfLines={6} spacing="4" skeletonHeight={8} />
+          ) : (
+            data?.content
+          )}
+          <DrawerFooter>
+            <Button variant="outline" mr={3}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue">Save</Button>
+          </DrawerFooter>
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
+  );
+};
 
 export default HomePage;
 

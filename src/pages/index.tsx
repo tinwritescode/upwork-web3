@@ -1,3 +1,12 @@
 import HomePage from "../lib/pages/home";
+import HomeProvider from "../lib/pages/home/provider";
 
-export default HomePage;
+const Home = () => {
+  return (
+    <HomeProvider>
+      <HomePage />
+    </HomeProvider>
+  );
+};
+
+export default Home;

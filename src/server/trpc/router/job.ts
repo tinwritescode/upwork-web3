@@ -95,4 +95,24 @@ export const jobRouter = router({
         total: jobCount,
       };
     }),
+  getJob: publicProcedure
+    .input(
+      z.object({
+        id: z.coerce.bigint(),
+      })
+    )
+    .query(async ({ ctx, input: { id } }) => {
+      const job = await ctx.prisma.job.findUnique({
+        where: { id: id },
+        include: {
+          skillsAndExperties: {
+            include: {
+              SkillsAndExperties: true,
+            },
+          },
+        },
+      });
+
+      return job;
+    }),
 });
